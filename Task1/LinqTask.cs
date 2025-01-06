@@ -115,10 +115,10 @@ public static class LinqTask
 
         var result = groupedByCity.Select(g =>
         {
-            var totalIncome = g.SelectMany(c => c.Orders).Sum(o => o.Total);
+            var customerIncomes = g.Select(c => c.Orders.Sum(o => o.Total));
+            var averageIncome = customerIncomes.Any() ? (int)Math.Round(customerIncomes.Average()) : 0;
             var totalOrders = g.SelectMany(c => c.Orders).Count();
-            int averageIncome = totalOrders > 0 ? (int)Math.Round(totalIncome / totalOrders) : 0;
-            int averageIntensity = totalOrders > 0 ? (int)Math.Round((double)totalOrders / g.Count()) : 0;
+            var averageIntensity = g.Any() ? (int)Math.Floor((double)totalOrders / g.Count()) : 0;
 
             return (city: g.Key, averageIncome, averageIntensity);
         });
